@@ -55,7 +55,7 @@ export const Accordion: React.FC<AccordionProps> = ({
     <AccordionContext.Provider
       value={{ activeItems, toggleItem, isItemActive }}
     >
-      <div className={`space-y-2 ${className}`}>{children}</div>
+      <div className={cn("space-y-2", className)}>{children}</div>
     </AccordionContext.Provider>
   );
 };
@@ -72,7 +72,7 @@ export const AccordionItem: React.FC<AccordionItemProps> = ({
   className = "",
 }) => {
   return (
-    <div className={`overflow-hidden border-b border-gray-200 ${className}`}>
+    <div className={cn("overflow-hidden border-b border-gray-200", className)}>
       {children}
     </div>
   );
@@ -121,13 +121,18 @@ export const AccordionHeader: React.FC<AccordionHeaderProps> = ({
 
   return (
     <button
+      id={`accordion-header-${itemId}`}
       onClick={handleClick}
-      className={`
+      aria-expanded={isActive}
+      aria-controls={`accordion-content-${itemId}`}
+      className={cn(
+        `
         w-full px-4 py-3 text-left
         focus:outline-none
         transition-colors duration-200 flex items-center justify-between cursor-pointer
-        ${className}
-      `}
+      `,
+        className
+      )}
     >
       <div className="flex items-center space-x-3">
         {iconPosition === "left" && (icon || defaultIcon)}
@@ -154,11 +159,16 @@ export const AccordionContent: React.FC<AccordionContentProps> = ({
 
   return (
     <div
-      className={`
+      id={`accordion-content-${itemId}`}
+      role="region"
+      aria-labelledby={`accordion-header-${itemId}`}
+      className={cn(
+        `
         overflow-hidden transition-all duration-300 ease-in-out
-        ${isActive ? "max-h-fit opacity-100" : "max-h-0 opacity-0"}
-        ${className}
-      `}
+        `,
+        isActive ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0",
+        className
+      )}
     >
       <div className="px-4 py-3 ">{children}</div>
     </div>

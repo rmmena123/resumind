@@ -8,7 +8,7 @@ export const meta = () => [
 ];
 
 const WipeApp = () => {
-  const { auth, isLoading, error, clearError, fs, ai, kv } = usePuterStore();
+  const { auth, isLoading, error, fs, kv } = usePuterStore();
   const navigate = useNavigate();
   const [files, setFiles] = useState<FSItem[]>([]);
 
@@ -23,14 +23,13 @@ const WipeApp = () => {
 
   useEffect(() => {
     if (!isLoading && !auth.isAuthenticated) {
-      navigate("/auth?next=/wipe");
+      navigate("/auth?next=/wipe", { replace: true });
     }
-  }, [isLoading]);
+  }, [isLoading, auth.isAuthenticated, navigate]);
 
   const handleDelete = async () => {
-    files.forEach(async (file) => {
-      await fs.delete(file.path);
-    });
+    const deletePromises = files.map((file) => fs.delete(file.path));
+    await Promise.all(deletePromises);
     await kv.flush();
     loadFiles();
   };
@@ -52,11 +51,18 @@ const WipeApp = () => {
         </p>
 
         <Link to="/" className="back-button">
-          <img src="/icons/back.svg" alt="logo" className="w-2.5 h-2.5" />
+          <img src="/icons/back.svg" alt="Back icon" className="w-2.5 h-2.5" />
           <span className="text-gray-800 text-sm font-semibold">
             Back to Homepage
           </span>
         </Link>
+
+        <button
+          className="primary-button w-fit text-xl font-semibold"
+          onClick={() => auth.signOut()}
+        >
+          Log Out
+        </button>
       </nav>
 
       <section className="wipe-section mt-10">

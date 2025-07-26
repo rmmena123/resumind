@@ -1,4 +1,15 @@
-const ScoreCircle = ({ score = 75 }: { score: number }) => {
+const GOOD_SCORE_THRESHOLD = 70;
+const AVERAGE_SCORE_THRESHOLD = 50;
+
+type ScoreStatus = "good" | "average" | "bad";
+
+const getScoreStatus = (score: number): ScoreStatus => {
+  if (score >= GOOD_SCORE_THRESHOLD) return "good";
+  if (score >= AVERAGE_SCORE_THRESHOLD) return "average";
+  return "bad";
+};
+
+const ScoreCircle = ({ score = 0 }: { score: number }) => {
   const radius = 40;
   const stroke = 8;
   const normalizedRadius = radius - stroke / 2;
@@ -7,12 +18,17 @@ const ScoreCircle = ({ score = 75 }: { score: number }) => {
   const strokeDashoffset = circumference * (1 - progress);
 
   return (
-    <div className="relative w-[100px] h-[100px]">
+    <div
+      className="relative w-[100px] h-[100px]"
+      role="img"
+      aria-label={`Score: ${score} out of 100`}
+    >
       <svg
         height="100%"
         width="100%"
         viewBox="0 0 100 100"
         className="transform -rotate-90"
+        aria-hidden="true"
       >
         {/* Background circle */}
         <circle
@@ -40,6 +56,7 @@ const ScoreCircle = ({ score = 75 }: { score: number }) => {
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
+          className="transition-[stroke-dashoffset] duration-1000 ease-out"
         />
       </svg>
 

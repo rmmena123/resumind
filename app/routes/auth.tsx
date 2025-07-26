@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { usePuterStore } from "~/lib/puter";
 
 export const meta = () => [
@@ -9,13 +9,17 @@ export const meta = () => [
 
 const Auth = () => {
   const { isLoading, auth } = usePuterStore();
-  const location = useLocation();
-  const next = location.search.split("next=")[1];
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const rawNext = searchParams.get("next");
+  const isValidRedirect =
+    rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//");
+  const nextUrl = isValidRedirect ? rawNext : "/";
 
   useEffect(() => {
-    if (auth.isAuthenticated) navigate(next);
-  }, [auth.isAuthenticated, next]);
+    if (auth.isAuthenticated) navigate(nextUrl, { replace: true });
+  }, [auth.isAuthenticated, nextUrl, navigate]);
 
   return (
     <main className="bg-[url('/images/bg-main.svg')] bg-cover min-h-screen flex items-center justify-center">

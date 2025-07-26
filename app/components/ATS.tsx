@@ -1,5 +1,41 @@
 import { cn } from "~/lib/utils";
 
+const GOOD_SCORE_THRESHOLD = 70;
+const WARNING_SCORE_THRESHOLD = 50;
+
+type ScoreStatus = "good" | "warning" | "bad";
+
+const getScoreStatus = (score: number): ScoreStatus => {
+  if (score >= GOOD_SCORE_THRESHOLD) {
+    return "good";
+  }
+  if (score >= WARNING_SCORE_THRESHOLD) {
+    return "warning";
+  }
+  return "bad";
+};
+
+const scoreStatusConfig: Record<
+  ScoreStatus,
+  { gradientClass: string; icon: string; altText: string }
+> = {
+  good: {
+    gradientClass: "from-green-100",
+    icon: "/icons/ats-good.svg",
+    altText: "Good score ATS",
+  },
+  warning: {
+    gradientClass: "from-yellow-100",
+    icon: "/icons/ats-warning.svg",
+    altText: "Warning score ATS",
+  },
+  bad: {
+    gradientClass: "from-red-100",
+    icon: "/icons/ats-bad.svg",
+    altText: "Bad score ATS",
+  },
+};
+
 const ATS = ({
   score,
   suggestions,
@@ -7,29 +43,18 @@ const ATS = ({
   score: number;
   suggestions: { type: "good" | "improve"; tip: string }[];
 }) => {
+  const status = getScoreStatus(score);
+  const { gradientClass, icon, altText } = scoreStatusConfig[status];
+
   return (
     <div
       className={cn(
         "rounded-2xl shadow-md w-full bg-gradient-to-b to-light-white p-8 flex flex-col gap-4",
-        score > 69
-          ? "from-green-100"
-          : score > 49
-          ? "from-yellow-100"
-          : "from-red-100"
+        gradientClass
       )}
     >
       <div className="flex flex-row gap-4 items-center">
-        <img
-          src={
-            score > 69
-              ? "/icons/ats-good.svg"
-              : score > 49
-              ? "/icons/ats-warning.svg"
-              : "/icons/ats-bad.svg"
-          }
-          alt="ATS"
-          className="w-10 h-10"
-        />
+        <img src={icon} alt={altText} className="w-10 h-10" />
         <p className="text-2xl font-semibold">ATS Score - {score}/100</p>
       </div>
       <div className="flex flex-col gap-2">
@@ -40,15 +65,18 @@ const ATS = ({
           Your resume was scanned like an employer would. Here's how it
           performed:
         </p>
-        {suggestions.map((suggestion, index) => (
-          <div className="flex flex-row gap-2 items-center" key={index}>
+        {suggestions.map((suggestion) => (
+          <div
+            className="flex flex-row gap-2 items-center"
+            key={suggestion.tip}
+          >
             <img
               src={
                 suggestion.type === "good"
                   ? "/icons/check.svg"
                   : "/icons/warning.svg"
               }
-              alt="ATS"
+              alt=""
               className="w-4 h-4"
             />
             <p className="text-lg text-gray-500">{suggestion.tip}</p>

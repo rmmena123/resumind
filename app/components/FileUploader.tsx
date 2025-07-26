@@ -1,45 +1,82 @@
-import { useCallback, useState } from "react";
-import { useDropzone } from "react-dropzone";
-import { formatSize } from "~/lib/utils";
+import { useCallback, useState, useEffect } from "react";
+import { useDropzone, type FileRejection } from "react-dropzone";
+import { formatSize, cn } from "~/lib/utils";
 
 interface FileUploaderProps {
-  onFileSelect: (file: File | null) => void;
+  file: File | null;
+  onFileChange: (file: File | null) => void;
 }
 
-const FileUploader = ({ onFileSelect }: FileUploaderProps) => {
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0] || null;
+const FileUploader = ({ file, onFileChange }: FileUploaderProps) => {
+  const [error, setError] = useState<string | null>(null);
 
-      onFileSelect?.(file);
+  const onDrop = useCallback(
+    (acceptedFiles: File[], fileRejections: FileRejection[]) => {
+      setError(null);
+
+      if (fileRejections.length > 0) {
+        const firstError = fileRejections[0].errors[0];
+
+        if (firstError.code === "file-too-large") {
+          setError("Arquivo muito grande. O máximo é 20 MB.");
+        } else if (firstError.code === "file-invalid-type") {
+          setError("Tipo de arquivo inválido. Apenas PDFs são aceitos.");
+        } else {
+          setError("Erro ao carregar o arquivo.");
+        }
+
+        onFileChange(null);
+
+        return;
+      }
+
+      onFileChange(acceptedFiles[0] || null);
     },
-    [onFileSelect]
+    [onFileChange]
   );
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
   const maxFileSize = 20 * 1024 * 1024;
 
-  const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
-    useDropzone({
-      onDrop,
-      multiple: false,
-      accept: { "application/pdf": [".pdf"] },
-      maxSize: maxFileSize,
-    });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    multiple: false,
+    accept: { "application/pdf": [".pdf"] },
+    maxSize: maxFileSize,
+    disabled: !!file,
+  });
 
-  const file = acceptedFiles[0] || null;
+  const handleRemoveFile = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    onFileChange(null);
+  };
 
   return (
     <div className="w-full gradient-border">
-      <div {...getRootProps()}>
+      <div
+        {...getRootProps()}
+        className={cn(
+          "uplader-drag-area",
+          isDragActive && "bg-blue-50 border-blue-400",
+          !file && "cursor-pointer",
+          file && "cursor-default"
+        )}
+      >
         <input {...getInputProps()} />
 
-        <div className="space-y-4 cursor-pointer">
+        <div className="space-y-4">
           {file ? (
             <div
               className="uploader-selected-file"
               onClick={(e) => e.stopPropagation()}
             >
-              <img src="/images/pdf.png" alt="pdf" className="size-10" />
+              <img src="/images/pdf.png" alt="PDF Icon" className="size-10" />
 
               <div className="flex items-center space-x-3">
                 <div>
@@ -53,27 +90,36 @@ const FileUploader = ({ onFileSelect }: FileUploaderProps) => {
               </div>
 
               <button
+                type="button"
+                aria-label="Remove file"
                 className="p-2 cursor-pointer"
-                onClick={(e) => {
-                  onFileSelect?.(null);
-                }}
+                onClick={handleRemoveFile}
               >
-                <img src="/icons/cross.svg" alt="remove" className="w-4 h-4" />
+                <img src="/icons/cross.svg" alt="" className="w-4 h-4" />
               </button>
             </div>
           ) : (
-            <div>
+            <div className="text-center">
               <div className="mx-auto w-16 h-16 flex items-center justify-center mb-2">
-                <img src="/icons/info.svg" alt="upload" className="size-20" />
+                <img
+                  src="/icons/info.svg"
+                  alt="Upload icon"
+                  className="size-20"
+                />
               </div>
 
               <p className="text-lg text-gray-500">
-                <span className="font-semibold">Click to upload</span> or drag
-                and drop
+                <span className="font-semibold">Clique para carregar</span> ou
+                arraste e solte
               </p>
 
-              <p className="text-lg text-gray-500">PDF (max 20 MB)</p>
+              <p className="text-lg text-gray-500">PDF (máx 20 MB)</p>
             </div>
+          )}
+          {error && (
+            <p className="text-sm text-red-600 text-center animate-in fade-in">
+              {error}
+            </p>
           )}
         </div>
       </div>

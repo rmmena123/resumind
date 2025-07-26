@@ -19,8 +19,8 @@ export default function Home() {
   const [loadingResumes, setLoadingResumes] = useState(false);
 
   useEffect(() => {
-    if (!auth.isAuthenticated) navigate("/auth?next=/");
-  }, [auth.isAuthenticated]);
+    if (!auth.isAuthenticated) navigate("/auth?next=/", { replace: true });
+  }, [auth.isAuthenticated, navigate]);
 
   useEffect(() => {
     const loadResumes = async () => {
@@ -31,8 +31,6 @@ export default function Home() {
       const parsedResumes = resumes?.map(
         (resume) => JSON.parse(resume.value) as Resume
       );
-
-      console.log(parsedResumes);
 
       setResumes(parsedResumes || []);
       setLoadingResumes(false);
@@ -64,9 +62,7 @@ export default function Home() {
         {!loadingResumes && resumes.length > 0 && (
           <div className="resumes-section">
             {resumes.map((resume: Resume) => (
-              <div>
-                <ResumeCard key={resume.id} resume={resume} />
-              </div>
+              <ResumeCard key={resume.id} resume={resume} />
             ))}
           </div>
         )}

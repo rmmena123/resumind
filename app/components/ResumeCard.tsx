@@ -11,7 +11,14 @@ const ResumeCard = ({
   const { fs } = usePuterStore();
   const [resumeUrl, setResumeUrl] = useState("");
 
+  const title = companyName || jobTitle || "Resume";
+  const subtitle = companyName && jobTitle ? jobTitle : null;
+  const altText = `Preview of resume for ${title}${
+    subtitle ? ` (${subtitle})` : ""
+  }`;
+
   useEffect(() => {
+    let url: string | undefined;
     const loadResume = async () => {
       const blob = await fs.read(imagePath);
 
@@ -19,12 +26,18 @@ const ResumeCard = ({
         return;
       }
 
-      let url = URL.createObjectURL(blob);
+      url = URL.createObjectURL(blob);
       setResumeUrl(url);
     };
 
     loadResume();
-  }, [imagePath]);
+
+    return () => {
+      if (url) {
+        URL.revokeObjectURL(url);
+      }
+    };
+  }, [imagePath, fs]);
 
   return (
     <Link
@@ -33,14 +46,9 @@ const ResumeCard = ({
     >
       <div className="resume-card-header">
         <div className="flex flex-col gap-2">
-          {companyName && (
-            <h2 className="!text-black font-bold break-words">{companyName}</h2>
-          )}
-          {jobTitle && (
-            <h3 className="text-lg break-words text-gray-500">{jobTitle}</h3>
-          )}
-          {!companyName && !jobTitle && (
-            <h2 className="!text-black font-bold">Resume</h2>
+          <h2 className="!text-black font-bold break-words">{title}</h2>
+          {subtitle && (
+            <h3 className="text-lg break-words text-gray-500">{subtitle}</h3>
           )}
         </div>
 
@@ -54,7 +62,7 @@ const ResumeCard = ({
           <div className="w-full h-full">
             <img
               src={resumeUrl}
-              alt="resume"
+              alt={altText}
               className="w-full h-[350px] max-sm:h-[200px] object-cover object-top"
             />
           </div>
