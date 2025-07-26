@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { usePuterStore } from "~/lib/puter";
 
+export const meta = () => [
+  { title: "Resumind | Wipe App Data" },
+  { name: "description", content: "Wipe all resumes from the app data" },
+];
+
 const WipeApp = () => {
   const { auth, isLoading, error, clearError, fs, ai, kv } = usePuterStore();
   const navigate = useNavigate();
