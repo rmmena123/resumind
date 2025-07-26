@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { usePuterStore } from "~/lib/puter";
 
 const WipeApp = () => {
@@ -30,34 +30,71 @@ const WipeApp = () => {
     loadFiles();
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   if (error) {
     return <div>Error {error}</div>;
   }
 
   return (
-    <div>
-      Authenticated as: {auth.user?.username}
-      <div>Existing files:</div>
-      <div className="flex flex-col gap-4">
-        {files.map((file) => (
-          <div key={file.id} className="flex flex-row gap-4">
-            <p>{file.name}</p>
+    <main className="bg-[url('/images/bg-main.svg')] bg-cover">
+      <nav className="navbar">
+        <Link to="/">
+          <p className="text-2xl font-bold text-gradient">RESUMIND</p>
+        </Link>
+
+        <p>
+          Authenticated as:{" "}
+          <span className="font-semibold">{auth.user?.username}</span>
+        </p>
+
+        <Link to="/" className="back-button">
+          <img src="/icons/back.svg" alt="logo" className="w-2.5 h-2.5" />
+          <span className="text-gray-800 text-sm font-semibold">
+            Back to Homepage
+          </span>
+        </Link>
+      </nav>
+
+      <section className="wipe-section mt-10">
+        {isLoading && (
+          <div className="flex flex-col items-center justify-center">
+            <img src="/images/resume-scan-2.gif" className="w-[350px]" />
           </div>
-        ))}
-      </div>
-      <div>
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer"
-          onClick={() => handleDelete()}
-        >
-          Wipe App Data
-        </button>
-      </div>
-    </div>
+        )}
+
+        {error && (
+          <div className="flex flex-col items-center justify-center">
+            <img src="/icons/ats-warning.svg" className="w-[200px]" />
+            <p className="text-xl font-semibold">{error}</p>
+          </div>
+        )}
+
+        {!isLoading && !error && (
+          <>
+            <h2 className="!text-black font-bold break-words">
+              Existing files
+            </h2>
+            <div className="flex flex-col gap-4">
+              {files.map((file) => (
+                <div
+                  key={file.id}
+                  className="flex flex-row gap-4 gradient-border animate-in fade-in duration-1000"
+                >
+                  <p className="font-medium text-xl">{file.name}</p>
+                </div>
+              ))}
+            </div>
+            <div>
+              <button
+                className="primary-button w-fit text-xl font-semibold"
+                onClick={() => handleDelete()}
+              >
+                Wipe App Data
+              </button>
+            </div>
+          </>
+        )}
+      </section>
+    </main>
   );
 };
 
