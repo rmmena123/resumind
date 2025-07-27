@@ -62,7 +62,7 @@ const FileUploader = ({ file, onFileChange }: FileUploaderProps) => {
       <div
         {...getRootProps()}
         className={cn(
-          "uplader-drag-area",
+          "uploader-drag-area",
           isDragActive && "bg-blue-50 border-blue-400",
           !file && "cursor-pointer",
           file && "cursor-default"
