@@ -1,8 +1,8 @@
-<img width="1800" height="520" alt="Readme-Thumbnail" src="/public/images/hero.webp" />
+<img width="1800" height="520" alt="hero" src="https://github.com/user-attachments/assets/3ed4de44-35e7-4fc3-9eb2-59b11b29c7a5" />
 
 # 📝 Resumind
 
-Um analisador de currículos com inteligência artificial, construído com React, React Router e Puter.js. Oferece autenticação simplificada, upload e armazenamento de currículos, e análise de compatibilidade entre candidatos e vagas com avaliações inteligentes. Obtenha feedback personalizado e pontuações ATS para cada vaga e currículo cadastrado.
+Um analisador de currículos com inteligência artificial, construído com React, React Router e Puter.js. Oferece autenticação simplificada, upload e armazenamento de currículos, e análise de compatibilidade entre candidatos e vagas com avaliações inteligentes. Obtenha feedback personalizado e pontuações ATS para cada vaga e currículo cadastrado. Foi desenvolvido durante o [curso de front-end do canal Javascript Mastery](https://www.youtube.com/watch?v=iYOz165wGkQ).
 
 ---
 
