@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
+import Navbar from "~/components/Navbar";
 import { usePuterStore } from "~/lib/puter";
 
 export const meta = () => [
@@ -40,30 +41,7 @@ const WipeApp = () => {
 
   return (
     <main className="bg-[url('/images/bg-main.svg')] bg-cover">
-      <nav className="navbar">
-        <Link to="/">
-          <p className="text-2xl font-bold text-gradient">RESUMIND</p>
-        </Link>
-
-        <p>
-          Authenticated as:{" "}
-          <span className="font-semibold">{auth.user?.username}</span>
-        </p>
-
-        <Link to="/" className="back-button">
-          <img src="/icons/back.svg" alt="Back icon" className="w-2.5 h-2.5" />
-          <span className="text-gray-800 text-sm font-semibold">
-            Back to Homepage
-          </span>
-        </Link>
-
-        <button
-          className="primary-button w-fit text-xl font-semibold"
-          onClick={() => auth.signOut()}
-        >
-          Log Out
-        </button>
-      </nav>
+      <Navbar />
 
       <section className="wipe-section mt-10">
         {isLoading && (

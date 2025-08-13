@@ -10,7 +10,7 @@ const Navbar = () => {
         <p className="text-2xl font-bold text-gradient">RESUMIND</p>
       </Link>
 
-      <div className="flex flex-row gap-2 flex-wrap items-center justify-center">
+      <div className="flex flex-row gap-2 flex-wrap">
         <Link to="/upload" className="primary-button w-fit">
           Upload Resume
         </Link>
