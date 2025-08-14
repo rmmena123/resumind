@@ -2,7 +2,7 @@
 
 # 📝 Resumind
 
-Um analisador de currículos com inteligência artificial, construído com React, React Router e Puter.js. Oferece autenticação simplificada, upload e armazenamento de currículos, e análise de compatibilidade entre candidatos e vagas com avaliações inteligentes. Obtenha feedback personalizado e pontuações ATS para cada vaga e currículo cadastrado. Foi desenvolvido durante o [curso de front-end do canal Javascript Mastery](https://www.youtube.com/watch?v=iYOz165wGkQ).
+Um analisador de currículos com inteligência artificial, construído com React, React Router e Puter.js. Oferece autenticação simplificada, upload e armazenamento de currículos, e análise de compatibilidade entre candidatos e vagas com avaliações inteligentes. Obtenha feedback personalizado e pontuações ATS para cada vaga e currículo cadastrado. Foi desenvolvido durante o [curso de front-end do canal Javascript Mastery](https://www.youtube.com/watch?v=iYOz165wGkQ) e modificado após a finalização do curso com adição de novas funcionalidades, correções e documentação técnica.
 
 ---
 
